@@ -81,6 +81,7 @@ float weaponSpeed[WP_NUM_WEAPONS][2] =
 	{ BLASTER_VELOCITY,BLASTER_VELOCITY },//WP_DC15S_CARBINE,
 	{ BRYAR_PISTOL_VEL,BRYAR_PISTOL_VEL },//WP_DC15A_RIFLE,
 	{ REPEATER_VELOCITY,REPEATER_VELOCITY },//WP_Z6_ROTARY,
+	{ BRYAR_PISTOL_VEL,BRYAR_PISTOL_VEL },//WP_IMP_PISTOL,
 
 };
 
@@ -388,6 +389,7 @@ qboolean W_AccuracyLoggableWeapon( int weapon, qboolean alt_fire, int mod )
 		{
 		case WP_BRYAR_PISTOL:
 		case WP_BLASTER_PISTOL:
+		case WP_IMP_PISTOL:
 		case WP_BLASTER:
 		case WP_DISRUPTOR:
 		case WP_BOWCASTER:
@@ -476,6 +478,7 @@ void CalcMuzzlePoint( gentity_t *const ent, vec3_t forwardVec, vec3_t right, vec
 	{
 	case WP_BRYAR_PISTOL:
 	case WP_BLASTER_PISTOL:
+	case WP_IMP_PISTOL:
 		ViewHeightFix(ent);
 		muzzlePoint[2] += ent->client->ps.viewheight;//By eyes
 		muzzlePoint[2] -= 16;
@@ -573,6 +576,7 @@ vec3_t WP_MuzzlePoint[WP_NUM_WEAPONS] =
 	{0,		0,		0	},	// WP_ATST_SIDE,
 	{0	,	8,		0	},	// WP_STUN_BATON,
 	{12,	6,		-6	},	// WP_BRYAR_PISTOL,
+	{12,	6,		-6	},	// WP_IMP_PISTOL,
 };
 
 void WP_RocketLock( gentity_t *ent, float lockDist )
@@ -1396,6 +1400,7 @@ void FireWeapon( gentity_t *ent, qboolean alt_fire )
 		break;
 
 	case WP_BRYAR_PISTOL:
+	case WP_IMP_PISTOL:
 	case WP_BLASTER_PISTOL:
 		WP_FireBryarPistol( ent, alt_fire );
 		break;

@@ -276,6 +276,7 @@ qboolean NPC_UpdateAngles ( qboolean doPitch, qboolean doYaw )
 		&& NPC->client->NPC_class != CLASS_VEHICLE )
 	{
 		if (NPC->s.weapon==WP_BLASTER_PISTOL ||
+			NPC->s.weapon==WP_IMP_PISTOL ||
 			NPC->s.weapon==WP_BLASTER ||
 			NPC->s.weapon==WP_BOWCASTER ||
 			NPC->s.weapon==WP_REPEATER ||

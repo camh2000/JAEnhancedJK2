@@ -85,6 +85,7 @@ typedef enum //# weapon_e
 	WP_DC15S_CARBINE,
 	WP_DC15A_RIFLE,
 	WP_Z6_ROTARY,
+	WP_IMP_PISTOL,	// NPC weapon - player cannot pick this up, never starts with them
 	
 
 	//# #eol

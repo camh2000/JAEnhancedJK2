@@ -267,6 +267,7 @@ stringID_table_t WPTable[] =
 	ENUM2STRING(WP_DC15S_CARBINE),
 	ENUM2STRING(WP_DC15A_RIFLE),
 	ENUM2STRING(WP_Z6_ROTARY),
+	ENUM2STRING(WP_IMP_PISTOL),	// apparently some enemy only version of the blaster
 	{ "", 0 }
 };
 

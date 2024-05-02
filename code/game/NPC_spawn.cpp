@@ -240,6 +240,7 @@ void G_ClassSetDontFlee( gentity_t *self )
 extern void	Vehicle_Register(gentity_t *ent);
 extern void RT_FlyStart( gentity_t *self );
 extern void SandCreature_ClearTimers( gentity_t *ent );
+extern void NPC_GalakMech_Precache( void );
 extern void NPC_GalakMech_Init( gentity_t *ent );
 void NPC_SetMiscDefaultData( gentity_t *ent )
 {
@@ -269,6 +270,10 @@ void NPC_SetMiscDefaultData( gentity_t *ent )
 		ent->takedamage = qfalse;//can't be killed
 		ent->flags |= FL_NO_KNOCKBACK;
 		SandCreature_ClearTimers( ent );
+	}
+	else if ( ent->client->NPC_class == CLASS_GALAKMECH )
+	{
+		ent->flags |= FL_NO_KNOCKBACK;
 	}
 	else if ( ent->client->NPC_class == CLASS_BOBAFETT )
 	{//set some stuff, precache
@@ -460,6 +465,7 @@ void NPC_SetMiscDefaultData( gentity_t *ent )
 			{
 			case WP_BRYAR_PISTOL://FIXME: new weapon: imp blaster pistol
 			case WP_BLASTER_PISTOL:
+			case WP_IMP_PISTOL:
 			case WP_DISRUPTOR:
 			case WP_BOWCASTER:
 			case WP_REPEATER:
@@ -478,7 +484,7 @@ void NPC_SetMiscDefaultData( gentity_t *ent )
 				if ( ent->NPC->rank >= RANK_LT || ent->client->ps.weapon == WP_THERMAL )
 				{//officers, grenade-throwers use alt-fire
 					//ent->health = 50;
-					//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					ent->NPC->scriptFlags |= SCF_ALT_FIRE;
 				}
 				break;
 			}
@@ -575,6 +581,15 @@ void NPC_SetMiscDefaultData( gentity_t *ent )
 						G_CreateG2AttachedWeaponModel( ent, weaponData[ent->client->ps.weapon].worldModel, ent->handLBolt, 1 );
 					}
 					break;
+				case WP_IMP_PISTOL:
+					NPCInfo->scriptFlags |= SCF_PILOT;
+					if (ent->client->NPC_class == CLASS_REBORN
+						&& ent->NPC->rank >= RANK_LT_COMM
+						&& (!(ent->NPC->aiFlags&NPCAI_MATCHPLAYERWEAPON) || !ent->weaponModel[0]))//they do this themselves
+					{//dual blaster pistols, so add the left-hand one, too
+						G_CreateG2AttachedWeaponModel(ent, weaponData[ent->client->ps.weapon].worldModel, ent->handLBolt, 1);
+					}
+					break;
 				case WP_DISRUPTOR:
 					//Sniper
 					//ent->NPC->scriptFlags |= SCF_ALT_FIRE;//FIXME: use primary fire sometimes?  Up close?  Different class of NPC?
@@ -585,13 +600,23 @@ void NPC_SetMiscDefaultData( gentity_t *ent )
 				case WP_REPEATER:
 					NPCInfo->scriptFlags |= SCF_PILOT;
 					//machine-gunner
+					ST_ClearTimers( ent );
+					if ( ent->NPC->rank >= RANK_COMMANDER )
+					{//commanders use alt-fire
+						//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (!Q_stricmp("stofficeralt", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
 					break;
 				case WP_DEMP2:
 					break;
 				case WP_FLECHETTE:
 					NPCInfo->scriptFlags |= SCF_PILOT;
 					//shotgunner
-					if ( !Q_stricmp( "stofficeralt", ent->NPC_type ) )
+					ST_ClearTimers( ent );
+					if (!Q_stricmp("stofficeralt", ent->NPC_type))
 					{
 						//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
 					}
@@ -617,11 +642,19 @@ void NPC_SetMiscDefaultData( gentity_t *ent )
 					ST_ClearTimers( ent );
 					if ( ent->NPC->rank >= RANK_COMMANDER )
 					{//commanders use alt-fire
-						//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
 					}
 					if ( !Q_stricmp( "rodian2", ent->NPC_type ) )
 					{
-						//ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (!Q_stricmp("assassin_droid", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
+					}
+					if (!Q_stricmp("mark2", ent->NPC_type))
+					{
+						ent->NPC->scriptFlags |= SCF_ALT_FIRE;
 					}
 					break;
 				}
@@ -746,15 +779,15 @@ int NPC_WeaponsForTeam( team_t team, int spawnflags, const char *NPC_type )
 		}
 		if ( Q_stricmp( "imperial", NPC_type ) == 0 )
 		{
-			return ( 1 << WP_BLASTER_PISTOL);
+			return ( 1 << WP_IMP_PISTOL);
 		}
 		if ( Q_stricmpn( "impworker", NPC_type, 9 ) == 0 )
 		{
-			return ( 1 << WP_BLASTER_PISTOL);
+			return ( 1 << WP_IMP_PISTOL);
 		}
 		if ( Q_stricmp( "stormpilot", NPC_type ) == 0 )
 		{
-			return ( 1 << WP_BLASTER_PISTOL);
+			return ( 1 << WP_IMP_PISTOL);
 		}
 		if ( Q_stricmp( "galak", NPC_type ) == 0 )
 		{
@@ -861,7 +894,7 @@ int NPC_WeaponsForTeam( team_t team, int spawnflags, const char *NPC_type )
 
 		if ( Q_stricmpn( "bespincop", NPC_type, 9 ) == 0 )
 		{
-			return ( 1 << WP_BLASTER_PISTOL);
+			return ( 1 << WP_IMP_PISTOL);
 		}
 
 		if ( Q_stricmp( "MonMothma", NPC_type ) == 0 )
@@ -2373,6 +2406,17 @@ SHY - Spawner is shy
 */
 void SP_NPC_Galak( gentity_t *self)
 {
+	if ( ( self->spawnflags & 1 ) )
+	{
+		self->NPC_type = "Galak_Mech";
+		NPC_GalakMech_Precache();
+	}
+	else
+	{
+		self->NPC_type = "Galak";
+	}
+
+	SP_NPC_spawner( self );
 }
 
 /*QUAKED NPC_Desann(1 0 0) (-16 -16 -24) (16 16 40) x x x x CEILING CINEMATIC NOTSOLID STARTINSOLID SHY
@@ -2677,7 +2721,14 @@ void SP_NPC_Rebel( gentity_t *self)
 {
 	if(!self->NPC_type)
 	{
-		self->NPC_type = "Rebel";
+		if ( Q_irand( 0, 1 ) )
+		{
+			self->NPC_type = "Rebel";
+		}
+		else
+		{
+			self->NPC_type = "Rebel2";
+		}
 	}
 
 	SP_NPC_spawner( self );

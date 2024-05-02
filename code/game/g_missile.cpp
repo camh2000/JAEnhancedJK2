@@ -59,6 +59,7 @@ void G_MissileBounceEffect( gentity_t *ent, vec3_t org, vec3_t dir, qboolean hit
 		break;
 	case WP_BLASTER:
 	case WP_BRYAR_PISTOL:
+	case WP_IMP_PISTOL:
 	case WP_BLASTER_PISTOL:
 		G_PlayEffect( "blaster/deflect", ent->currentOrigin, dir );
 		break;
@@ -82,6 +83,7 @@ void G_MissileReflectEffect( gentity_t *ent, vec3_t org, vec3_t dir )
 		break;
 	case WP_BLASTER:
 	case WP_BRYAR_PISTOL:
+	case WP_IMP_PISTOL:
 	case WP_BLASTER_PISTOL:
 	default:
 		G_PlayEffect( "blaster/deflect", ent->currentOrigin, dir );

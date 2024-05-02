@@ -299,7 +299,7 @@ void G_AttackDelay( gentity_t *self, gentity_t *enemy )
 			}
 			else
 			{//regular blaster
-				attDelay -= Q_irand( 0, 500 );
+				attDelay += Q_irand( 0, 500 );
 			}
 			break;
 		case WP_BOWCASTER:
@@ -322,6 +322,9 @@ void G_AttackDelay( gentity_t *self, gentity_t *enemy )
 			break;
 		case WP_BLASTER_PISTOL:	// apparently some enemy only version of the blaster
 			attDelay -= Q_irand( 500, 1500 );
+			break;
+		case WP_IMP_PISTOL:	// apparently some enemy only version of the blaster
+			attDelay -= Q_irand(500, 1500);
 			break;
 		case WP_DISRUPTOR://sniper's don't delay?
 			return;
@@ -497,7 +500,7 @@ void G_SetEnemy( gentity_t *self, gentity_t *enemy )
 		if (self->client && self->client->NPC_class == CLASS_SABOTEUR)
 		{
 			Saboteur_Cloak(NPC);					// Cloak
-			TIMER_Set(self, "decloakwait", 3000);	// Wait 3 sec before decloak and attack
+			TIMER_Set(self, "decloakwait", 1000);	// Wait 1 sec before decloak and attack was 3
 		}
 
 
@@ -577,8 +580,8 @@ void G_SetEnemy( gentity_t *self, gentity_t *enemy )
 		}
 
 		if ( self->s.weapon == WP_BLASTER || self->s.weapon == WP_REPEATER ||
-			self->s.weapon == WP_THERMAL || self->s.weapon == WP_BLASTER_PISTOL
-			|| self->s.weapon == WP_BOWCASTER )
+			self->s.weapon == WP_THERMAL || self->s.weapon == WP_BLASTER_PISTOL || 
+			self->s.weapon == WP_IMP_PISTOL || self->s.weapon == WP_BOWCASTER )
 		{//Hmm, how about sniper and bowcaster?
 			//When first get mad, aim is bad
 			//Hmm, base on game difficulty, too?  Rank?
@@ -636,6 +639,13 @@ void G_SetEnemy( gentity_t *self, gentity_t *enemy )
 				self->client->ps.weapon = WP_BLASTER_PISTOL;
 				self->client->ps.weaponstate = WEAPON_READY;
 				G_CreateG2AttachedWeaponModel( self, weaponData[WP_BLASTER_PISTOL].worldModel, self->handRBolt, 0 );
+			}
+			else if (self->client->ps.weapons[WP_IMP_PISTOL])
+			{
+				ChangeWeapon(self, WP_IMP_PISTOL);
+				self->client->ps.weapon = WP_IMP_PISTOL;
+				self->client->ps.weaponstate = WEAPON_READY;
+				G_CreateG2AttachedWeaponModel(self, weaponData[WP_IMP_PISTOL].worldModel, self->handRBolt, 0);
 			}
 		}
 		return;
@@ -751,6 +761,44 @@ void ChangeWeapon( gentity_t *ent, int newWeapon )
 			if ( g_spskill->integer == 0 )
 				ent->NPC->burstSpacing = 1000;//attack debounce
 			else if ( g_spskill->integer == 1 )
+				ent->NPC->burstSpacing = 750;//attack debounce
+			else
+				ent->NPC->burstSpacing = 500;//attack debounce
+		}
+		break;
+
+	case WP_IMP_PISTOL:
+		ent->NPC->aiFlags &= ~NPCAI_BURST_WEAPON;
+		if (ent->weaponModel[1] > 0)
+		{//commando
+			ent->NPC->aiFlags |= NPCAI_BURST_WEAPON;
+			ent->NPC->burstMin = 4;
+#ifdef BASE_SAVE_COMPAT
+			ent->NPC->burstMean = 8;
+#endif
+			ent->NPC->burstMax = 12;
+			if (g_spskill->integer == 0)
+				ent->NPC->burstSpacing = 600;//attack debounce
+			else if (g_spskill->integer == 1)
+				ent->NPC->burstSpacing = 400;//attack debounce
+			else
+				ent->NPC->burstSpacing = 250;//attack debounce
+		}
+		else if (ent->client->NPC_class == CLASS_SABOTEUR)
+		{
+			if (g_spskill->integer == 0)
+				ent->NPC->burstSpacing = 900;//attack debounce
+			else if (g_spskill->integer == 1)
+				ent->NPC->burstSpacing = 600;//attack debounce
+			else
+				ent->NPC->burstSpacing = 400;//attack debounce
+		}
+		else
+		{
+			//	ent->NPC->burstSpacing = 1000;//attackdebounce
+			if (g_spskill->integer == 0)
+				ent->NPC->burstSpacing = 1000;//attack debounce
+			else if (g_spskill->integer == 1)
 				ent->NPC->burstSpacing = 750;//attack debounce
 			else
 				ent->NPC->burstSpacing = 500;//attack debounce
@@ -1561,6 +1609,10 @@ float NPC_MaxDistSquaredForWeapon (void)
 		return 1024 * 1024;
 		break;
 
+	case WP_IMP_PISTOL://prifle
+		return 1024 * 1024;
+		break;
+
 	case WP_DISRUPTOR://disruptor
 	case WP_TUSKEN_RIFLE:
 		if ( NPCInfo->scriptFlags & SCF_ALT_FIRE )
@@ -2270,7 +2322,7 @@ qboolean NPC_ClearShot( gentity_t *ent )
 	// add aim error
 	// use weapon instead of specific npc types, although you could add certain npc classes if you wanted
 //	if ( NPC->client->playerTeam == TEAM_SCAVENGERS )
-	if( NPC->s.weapon == WP_BLASTER || NPC->s.weapon == WP_BLASTER_PISTOL ) // any other guns to check for?
+	if( NPC->s.weapon == WP_BLASTER || NPC->s.weapon == WP_BLASTER_PISTOL || NPC->s.weapon == WP_IMP_PISTOL ) // any other guns to check for?
 	{
 		vec3_t	mins = { -2, -2, -2 };
 		vec3_t	maxs = {  2,  2,  2 };
@@ -2330,7 +2382,7 @@ int NPC_ShotEntity( gentity_t *ent, vec3_t impactPos )
 	// add aim error
 	// use weapon instead of specific npc types, although you could add certain npc classes if you wanted
 //	if ( NPC->client->playerTeam == TEAM_SCAVENGERS )
-	if( NPC->s.weapon == WP_BLASTER || NPC->s.weapon == WP_BLASTER_PISTOL ) // any other guns to check for?
+	if( NPC->s.weapon == WP_BLASTER || NPC->s.weapon == WP_BLASTER_PISTOL || NPC->s.weapon == WP_IMP_PISTOL ) // any other guns to check for?
 	{
 		vec3_t	mins = { -2, -2, -2 };
 		vec3_t	maxs = {  2,  2,  2 };
@@ -2643,6 +2695,7 @@ float IdealDistance ( gentity_t *self )
 	case WP_SABER:
 	case WP_BRYAR_PISTOL:
 	case WP_BLASTER_PISTOL:
+	case WP_IMP_PISTOL:
 	case WP_BLASTER:
 	default:
 		break;

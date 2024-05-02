@@ -167,6 +167,7 @@ qboolean playerUsableWeapons[WP_NUM_WEAPONS] =
 	qtrue,//WP_DC15S_CARBINE,
 	qtrue,//WP_DC15A_RIFLE,
 	qtrue,//WP_Z6_ROTARY,
+	qfalse,//WP_IMP_BLASTER,
 
 	//# #eol
 	//WP_NUM_WEAPONS
@@ -283,6 +284,7 @@ const int defaultDamage[] = {
 	BLASTER_DAMAGE,				// WP_DC15S_CARBINE,
 	BRYAR_PISTOL_DAMAGE,		// WP_DC15A_RIFLE,
 	REPEATER_DAMAGE,			// WP_Z6_ROTARY,
+	BRYAR_PISTOL_DAMAGE,		// WP_IMP_PISTOL
 };
 
 const int defaultAltDamage[] = {
@@ -326,6 +328,7 @@ const int defaultAltDamage[] = {
 	BLASTER_DAMAGE,			// WP_DC15S_CARBINE,
 	0,						// WP_DC15A_RIFLE,
 	0,						// WP_Z6_ROTARY,
+	BRYAR_PISTOL_DAMAGE,	// WP_IMP_PISTOL
 };
 
 const int defaultSplashDamage[] = {
@@ -369,6 +372,7 @@ const int defaultSplashDamage[] = {
 	0,								// WP_DC15S_CARBINE,
 	0,								// WP_DC15A_RIFLE,
 	0,								// WP_Z6_ROTARY,
+	0,								// WP_IMP_PISTOL
 };
 
 const float defaultSplashRadius[] = {
@@ -412,6 +416,7 @@ const float defaultSplashRadius[] = {
 	0.0f,							// WP_DC15S_CARBINE,
 	0.0f,							// WP_DC15A_RIFLE,
 	0.0f,							// WP_Z6_ROTARY,
+	0.0f,							// WP_IMP_PISTOL
 };
 
 const int defaultAltSplashDamage[] = {
@@ -455,6 +460,7 @@ const int defaultAltSplashDamage[] = {
 	0,								// WP_DC15S_CARBINE,
 	0,								// WP_DC15A_RIFLE,
 	0,								// WP_Z6_ROTARY,
+	0,								// WP_IMP_PISTOL
 };
 
 const float defaultAltSplashRadius[] = {
@@ -498,6 +504,7 @@ const float defaultAltSplashRadius[] = {
 	0.0f,							// WP_DC15S_CARBINE,
 	0.0f,							// WP_DC15A_RIFLE,
 	0.0f,							// WP_Z6_ROTARY,
+	0.0f,							// WP_IMP_PISTOL
 };
 
 wpnParms_t WpnParms[] =
@@ -645,6 +652,8 @@ void WPN_WeaponType( const char **holdBuf)
 		weaponNum = WP_DC15A_RIFLE;
 	else if (!Q_stricmp(tokenStr,"WP_Z6_ROTARY"))
 		weaponNum = WP_Z6_ROTARY;
+	else if (!Q_stricmp(tokenStr, "WP_IMP_PISTOL"))
+		weaponNum = WP_IMP_PISTOL;
 	else
 	{
 		weaponNum = 0;

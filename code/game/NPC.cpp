@@ -1960,6 +1960,10 @@ void NPC_RunBehavior( int team, int bState )
 		G_CheckCharmed( NPC );
 		G_CheckInsanity( NPC );
 	}
+	else if ( NPC->client->NPC_class == CLASS_MINEMONSTER )
+	{
+		NPC_BehaviorSet_MineMonster( bState );
+	}
 	else if ( NPCInfo->scriptFlags & SCF_FORCED_MARCH )
 	{//being forced to march
 		NPC_BSDefault();
@@ -2024,9 +2028,6 @@ void NPC_RunBehavior( int team, int bState )
 				return;
 			case CLASS_INTERROGATOR:
 				NPC_BehaviorSet_Interrogator( bState );
-				return;
-			case CLASS_MINEMONSTER:
-				NPC_BehaviorSet_MineMonster( bState );
 				return;
 			case CLASS_HOWLER:
 				NPC_BehaviorSet_Howler( bState );

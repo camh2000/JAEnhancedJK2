@@ -81,6 +81,10 @@ void WP_FireBryarPistol( gentity_t *ent, qboolean alt_fire )
 	{//*SIGH*... I hate our weapon system...
 		missile->s.weapon = ent->s.weapon;
 	}
+	else if (ent->s.weapon == WP_IMP_PISTOL)
+	{//*SIGH*... I hate our weapon system...
+		missile->s.weapon = WP_IMP_PISTOL;
+	}
 	else
 	{
 		missile->s.weapon = WP_BRYAR_PISTOL;

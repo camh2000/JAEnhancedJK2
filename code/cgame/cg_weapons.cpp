@@ -420,6 +420,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 
 	case WP_BRYAR_PISTOL:
 	case WP_BLASTER_PISTOL: // enemy version
+	case WP_IMP_PISTOL: // enemy version
 	case WP_JAWA:
 		cgs.effects.bryarShotEffect			= theFxScheduler.RegisterEffect( "bryar/shot" );
 											theFxScheduler.RegisterEffect( "bryar/NPCshot" );
@@ -1700,6 +1701,7 @@ void CG_AddViewWeapon( playerState_t *ps )
 	//-----------------------
 	if (( ps->weaponstate == WEAPON_CHARGING_ALT && ps->weapon == WP_BRYAR_PISTOL )
 			|| ( ps->weaponstate == WEAPON_CHARGING_ALT && ps->weapon == WP_BLASTER_PISTOL )
+			|| (ps->weaponstate == WEAPON_CHARGING_ALT && ps->weapon == WP_IMP_PISTOL)
 			|| ( ps->weapon == WP_BOWCASTER && ps->weaponstate == WEAPON_CHARGING )
 			|| ( ps->weapon == WP_DEMP2 && ps->weaponstate == WEAPON_CHARGING_ALT ))
 	{
@@ -1708,7 +1710,8 @@ void CG_AddViewWeapon( playerState_t *ps )
 		vec3_t	WHITE	= {1.0f,1.0f,1.0f};
 
 		if ( ps->weapon == WP_BRYAR_PISTOL
-			|| ps->weapon == WP_BLASTER_PISTOL )
+			|| ps->weapon == WP_BLASTER_PISTOL
+			|| ps->weapon == WP_IMP_PISTOL )
 		{
 			// Hardcoded max charge time of 1 second
 			val = ( cg.time - ps->weaponChargeTime ) * 0.001f;
@@ -1860,6 +1863,7 @@ const char *weaponDesc[WP_NUM_WEAPONS - 1] =
 "DC15S_CARBINE_DESC",
 "DC15A_RIFLE_DESC",
 "Z6_ROTARY_DESC",
+"BLASTER_PISTOL_DESC",
 };
 
 /*
@@ -3400,6 +3404,7 @@ void CG_MissileHitWall( centity_t *cent, int weapon, vec3_t origin, vec3_t dir, 
 	{
 	case WP_BRYAR_PISTOL:
 	case WP_BLASTER_PISTOL:
+	case WP_IMP_PISTOL:
 	case WP_JAWA:
 		if ( altFire )
 		{
@@ -3561,6 +3566,7 @@ void CG_MissileHitPlayer( centity_t *cent, int weapon, vec3_t origin, vec3_t dir
 	{
 	case WP_BRYAR_PISTOL:
 	case WP_BLASTER_PISTOL:
+	case WP_IMP_PISTOL:
 	case WP_JAWA:
 		if ( altFire )
 		{

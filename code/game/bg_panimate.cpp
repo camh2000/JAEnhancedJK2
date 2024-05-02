@@ -6035,6 +6035,45 @@ void PM_TorsoAnimation( void )
 						}
 					}
 					break;
+				case WP_IMP_PISTOL:
+					if (pm->gent
+						&& pm->gent->weaponModel[1] > 0)
+					{//dual pistols
+						if (weaponBusy)
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, BOTH_GUNSIT1, SETANIM_FLAG_NORMAL);
+						}
+						else if (PM_RunningAnim(pm->ps->legsAnim)
+							|| PM_WalkingAnim(pm->ps->legsAnim)
+							|| PM_JumpingAnim(pm->ps->legsAnim)
+							|| PM_SwimmingAnim(pm->ps->legsAnim))
+						{//running w/1-handed weapon uses full-body anim
+							PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
+						}
+						else
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, BOTH_STAND6, SETANIM_FLAG_NORMAL);
+						}
+					}
+					else
+					{//single pistols
+						if (pm->ps->weaponstate == WEAPON_CHARGING_ALT || weaponBusy)
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY2, SETANIM_FLAG_NORMAL);
+						}
+						else if (PM_RunningAnim(pm->ps->legsAnim)
+							|| PM_WalkingAnim(pm->ps->legsAnim)
+							|| PM_JumpingAnim(pm->ps->legsAnim)
+							|| PM_SwimmingAnim(pm->ps->legsAnim))
+						{//running w/1-handed weapon uses full-body anim
+							PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
+						}
+						else
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY2, SETANIM_FLAG_NORMAL);
+						}
+					}
+					break;
 				case WP_NONE:
 					//NOTE: should never get here
 					break;
@@ -6353,6 +6392,45 @@ void PM_TorsoAnimation( void )
 						else
 						{
 							PM_SetAnim(pm,SETANIM_TORSO,TORSO_WEAPONIDLE2,SETANIM_FLAG_NORMAL);
+						}
+					}
+					break;
+				case WP_IMP_PISTOL:
+					if (pm->gent
+						&& pm->gent->weaponModel[1] > 0)
+					{//dual pistols
+						if (weaponBusy)
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, BOTH_GUNSIT1, SETANIM_FLAG_NORMAL);
+						}
+						else if (PM_RunningAnim(pm->ps->legsAnim)
+							|| PM_WalkingAnim(pm->ps->legsAnim)
+							|| PM_JumpingAnim(pm->ps->legsAnim)
+							|| PM_SwimmingAnim(pm->ps->legsAnim))
+						{//running w/1-handed weapon uses full-body anim
+							PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
+						}
+						else
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, BOTH_STAND1, SETANIM_FLAG_NORMAL);
+						}
+					}
+					else
+					{//single pistols
+						if (pm->ps->weaponstate == WEAPON_CHARGING_ALT || weaponBusy)
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONREADY2, SETANIM_FLAG_NORMAL);
+						}
+						else if (PM_RunningAnim(pm->ps->legsAnim)
+							|| PM_WalkingAnim(pm->ps->legsAnim)
+							|| PM_JumpingAnim(pm->ps->legsAnim)
+							|| PM_SwimmingAnim(pm->ps->legsAnim))
+						{//running w/1-handed weapon uses full-body anim
+							PM_SetAnim(pm, SETANIM_TORSO, pm->ps->legsAnim, SETANIM_FLAG_NORMAL);
+						}
+						else
+						{
+							PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE2, SETANIM_FLAG_NORMAL);
 						}
 					}
 					break;

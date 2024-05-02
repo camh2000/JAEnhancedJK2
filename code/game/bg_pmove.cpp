@@ -13059,6 +13059,7 @@ static bool PM_DoChargedWeapons( void )
 	{
 	//------------------
 	case WP_BRYAR_PISTOL:
+	case WP_IMP_PISTOL:
 	case WP_BLASTER_PISTOL:
 
 		// alt-fire charges the weapon
@@ -13281,7 +13282,8 @@ static int PM_DoChargingAmmoUsage( int *amount )
 		*amount *= count;
 	}
 	else if(  ( pm->ps->weapon == WP_BRYAR_PISTOL && pm->cmd.buttons & BUTTON_ALT_ATTACK )
-			  || ( pm->ps->weapon == WP_BLASTER_PISTOL && pm->cmd.buttons & BUTTON_ALT_ATTACK ) )
+			  || ( pm->ps->weapon == WP_BLASTER_PISTOL && pm->cmd.buttons & BUTTON_ALT_ATTACK ) 
+			  || (pm->ps->weapon == WP_IMP_PISTOL && pm->cmd.buttons & BUTTON_ALT_ATTACK) )
 	{
 		// this code is duplicated ( I know, I know ) in G_weapon.cpp for the bryar alt-fire
 		count = ( level.time - pm->ps->weaponChargeTime ) / BRYAR_CHARGE_UNIT;
@@ -13632,6 +13634,18 @@ static void PM_Weapon( void )
 			switch(pm->ps->weapon)
 			{
 			case WP_BRYAR_PISTOL:
+			case WP_IMP_PISTOL:
+				if (pm->gent
+					&& pm->gent->weaponModel[1] > 0)
+				{//dual pistols
+					//FIXME: should be a better way of detecting a dual-pistols user so it's not hardcoded to the saboteurcommando...
+					PM_SetAnim(pm, SETANIM_TORSO, BOTH_STAND1, SETANIM_FLAG_NORMAL);
+				}
+				else
+				{//single pistol
+					PM_SetAnim(pm, SETANIM_TORSO, TORSO_WEAPONIDLE2, SETANIM_FLAG_NORMAL);
+				}
+				break;
 			case WP_BLASTER_PISTOL:
 				if ( pm->gent
 					&& pm->gent->weaponModel[1] > 0 )
@@ -13810,6 +13824,16 @@ static void PM_Weapon( void )
 				break;
 	*/
 			case WP_BRYAR_PISTOL://1-handed
+			case WP_IMP_PISTOL://1-handed
+				if (pm->gent && pm->gent->weaponModel[1] > 0)
+				{//dual pistols
+					PM_SetAnim(pm, SETANIM_TORSO, BOTH_GUNSIT1, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_RESTART | SETANIM_FLAG_HOLD);
+				}
+				else
+				{//single pistol
+					PM_SetAnim(pm, SETANIM_TORSO, BOTH_ATTACK2, SETANIM_FLAG_OVERRIDE | SETANIM_FLAG_RESTART | SETANIM_FLAG_HOLD);
+				}
+				break;
 			case WP_BLASTER_PISTOL://1-handed
 				if ( pm->gent && pm->gent->weaponModel[1] > 0 )
 				{//dual pistols

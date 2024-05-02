@@ -28,7 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #define MIN_DISTANCE		54
 #define MIN_DISTANCE_SQR	( MIN_DISTANCE * MIN_DISTANCE )
 
-#define MAX_DISTANCE		128
+#define MAX_DISTANCE		54
 #define MAX_DISTANCE_SQR	( MAX_DISTANCE * MAX_DISTANCE )
 
 #define LSTATE_CLEAR		0
